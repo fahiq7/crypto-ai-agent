@@ -1,20 +1,23 @@
 import requests
 import feedparser
 
-def get_price(coin_id="bitcoin"):
+import requests
+
+def get_price(coin_id):
     url = "https://api.coingecko.com/api/v3/simple/price"
     params = {
         "ids": coin_id,
         "vs_currencies": "usd"
     }
 
-    response = requests.get(url)
-    data = response.json()
+    try:
+        r = requests.get(url, params=params)
+        data = r.json()
 
-    if coin_id in data:
-        return data[coin_id]["usd"]
-    else:
-        return "Coin not found"
+        return data.get(coin_id, {}).get("usd", None)
+
+    except:
+        return None
 
 
 def get_news():

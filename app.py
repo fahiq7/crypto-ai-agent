@@ -27,7 +27,10 @@ price = get_price(coin)
 news = get_news()
 
 st.subheader(f"📊 {coin.upper()} Live Data")
-st.metric("Current Price (USD)", price)
+if price is None:
+    st.error("Price not available")
+else:
+    st.metric("Current Price (USD)", f"${price}")
 
 # DEBUG (optional)
 st.write("DEBUG PRICE:", price)
