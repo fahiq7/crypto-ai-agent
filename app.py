@@ -8,9 +8,11 @@ from agents import run_agent
 
 st.set_page_config(page_title="Crypto AI Dashboard", layout="wide")
 
-st.title("Crypto AI Intelligence Dashboard")
+st.title("🚀 Crypto AI Intelligence Dashboard")
 
-# Sidebar
+# =========================
+# SIDEBAR
+# =========================
 coin = st.sidebar.selectbox(
     "Select Coin",
     ["bitcoin", "ethereum", "solana", "binancecoin", "ripple"]
@@ -19,7 +21,7 @@ coin = st.sidebar.selectbox(
 st.sidebar.write("AI analyzes market using multi-agent system")
 
 # =========================
-# GET DATA (SAFE)
+# PRICE + NEWS
 # =========================
 price = get_price(coin)
 news = get_news()
@@ -27,14 +29,16 @@ news = get_news()
 st.subheader(f"📊 {coin.upper()} Live Data")
 st.metric("Current Price (USD)", price)
 
+# DEBUG (optional)
+st.write("DEBUG PRICE:", price)
+
 # =========================
-# CHART DATA (FIXED)
+# CHART DATA (FIXED PROPERLY)
 # =========================
 url = f"https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
 params = {"vs_currency": "usd", "days": 1}
 
 response = requests.get(url, params=params)
-
 data = response.json()
 
 prices = data.get("prices", [])
