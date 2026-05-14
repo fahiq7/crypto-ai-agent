@@ -5,7 +5,8 @@ import pandas as pd
 
 from tools import get_price, get_news
 from agents import run_agent
-st.autorefresh(interval=5000)  # refresh every 5 seconds
+from streamlit.runtime.scriptrunner import add_script_run_ctx
+import streamlit as st
 
 st.set_page_config(page_title="Crypto AI Dashboard", layout="wide")
 
