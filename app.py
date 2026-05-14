@@ -8,7 +8,7 @@ from agents import run_agent
 
 st.set_page_config(page_title="Crypto AI Dashboard", layout="wide")
 
-st.title("🚀 Crypto AI Intelligence Dashboard")
+st.title("Crypto AI Intelligence Dashboard")
 
 # Sidebar
 coin = st.sidebar.selectbox(
@@ -18,26 +18,40 @@ coin = st.sidebar.selectbox(
 
 st.sidebar.write("AI analyzes market using multi-agent system")
 
-# Get data
+# =========================
+# GET DATA (SAFE)
+# =========================
 price = get_price(coin)
 news = get_news()
 
 st.subheader(f"📊 {coin.upper()} Live Data")
 st.metric("Current Price (USD)", price)
 
-# Simple fake chart data (we improve later with real candles)
-prices = requests.get(
-    f"https://api.coingecko.com/api/v3/coins/{coin}/market_chart?vs_currency=usd&days=1"
-).json()["prices"]
+# =========================
+# CHART DATA (FIXED)
+# =========================
+url = f"https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
+params = {"vs_currency": "usd", "days": 1}
 
-df = pd.DataFrame(prices, columns=["time", "price"])
+response = requests.get(url, params=params)
 
-fig, ax = plt.subplots()
-ax.plot(df["price"])
-ax.set_title(f"{coin.upper()} Price Chart (24H)")
-st.pyplot(fig)
+data = response.json()
 
-# AI Agents
+prices = data.get("prices", [])
+
+if not prices:
+    st.warning("⚠️ No chart data available for this coin")
+else:
+    df = pd.DataFrame(prices, columns=["time", "price"])
+
+    fig, ax = plt.subplots()
+    ax.plot(df["price"])
+    ax.set_title(f"{coin.upper()} Price Chart (24H)")
+    st.pyplot(fig)
+
+# =========================
+# AI AGENTS
+# =========================
 st.subheader("🧠 AI Market Analysis")
 
 market = run_agent("Market Analyst", "Analyze price trend", price)
@@ -62,6 +76,8 @@ decision = run_agent(
 st.subheader("📢 Final AI Decision")
 st.write(decision)
 
-# News section
+# =========================
+# NEWS
+# =========================
 st.subheader("📰 Latest Crypto News")
 st.write(news)
