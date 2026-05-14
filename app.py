@@ -5,6 +5,7 @@ import pandas as pd
 
 from tools import get_price, get_news
 from agents import run_agent
+st.autorefresh(interval=5000)  # refresh every 5 seconds
 
 st.set_page_config(page_title="Crypto AI Dashboard", layout="wide")
 
@@ -38,24 +39,37 @@ st.write("DEBUG PRICE:", price)
 # =========================
 # CHART DATA (FIXED PROPERLY)
 # =========================
+import plotly.graph_objects as go
+
 url = f"https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
 params = {"vs_currency": "usd", "days": 1}
 
-response = requests.get(url, params=params)
-data = response.json()
+data = requests.get(url, params=params).json()
 
 prices = data.get("prices", [])
 
-if not prices:
-    st.warning("⚠️ No chart data available for this coin")
-else:
+if prices:
     df = pd.DataFrame(prices, columns=["time", "price"])
 
-    fig, ax = plt.subplots()
-    ax.plot(df["price"])
-    ax.set_title(f"{coin.upper()} Price Chart (24H)")
-    st.pyplot(fig)
+    fig = go.Figure()
 
+    fig.add_trace(go.Scatter(
+        x=df["time"],
+        y=df["price"],
+        mode="lines",
+        name="Price"
+    ))
+
+    fig.update_layout(
+        title=f"{coin.upper()} Live Price Chart",
+        xaxis_title="Time",
+        yaxis_title="Price (USD)",
+        template="plotly_dark"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.warning("No chart data available")
 # =========================
 # AI AGENTS
 # =========================
