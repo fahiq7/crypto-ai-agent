@@ -1,0 +1,9 @@
+# environment variables (VERY IMPORTANT)
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# system files
+.DS_Store

@@ -1,0 +1,7 @@
+streamlit
+requests
+pandas
+matplotlib
+groq
+python-dotenv
+feedparser
